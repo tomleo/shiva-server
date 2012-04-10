@@ -19,8 +19,8 @@ Wish list
 * They can also upload their music.
 * Set up a radio and collaboratively pick the music.
 * No playlists, pick your songs by artist/album.
+* Music sources: Search and download songs from external websites.
 * Your music, your rules.
-* A better motto.
 
 
 Installation
