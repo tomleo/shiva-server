@@ -1,6 +1,70 @@
 # -*- coding: utf-8 -*-
+from shiva.exceptions import PathDoesNotExistError, PathIsNotDirectoryError
+
 from flask import url_for
 import os
+
+
+class Directory(object):
+    """Represents a directory in filesystem.
+    """
+
+    def __init__(self, path):
+        if not os.path.exists(path):
+            raise PathDoesNotExistError(path)
+        if not os.path.isdir(path):
+            raise PathIsNotDirectoryError(path)
+
+        self.path = path
+        self.dirs = []
+        self.files = []
+
+        for directory in self.listdir():
+            if os.path.isdir(path):
+                self.dirs.append(Directory(path))
+            elif os.path.isfile(path):
+                _file = File(path)
+                if _file.is_media():
+                    self.files.append(_file)
+
+        print '%s:' % self.path
+        print self.dirs
+        print self.paths
+
+    def listdir(self):
+        return os.path.listdir(self.path)
+
+
+class File(object):
+    """
+    """
+
+    def __init__(self, path):
+        if not os.path.exists(path):
+            raise PathDoesNotExistError(path)
+        if not os.path.isfile(path):
+            raise PathIsNotFileError(path)
+
+        self.path = path
+        last_dot = path.rfind('.') + 1
+        self.extension = path[last_dot:].lower()
+
+    def is_media(self):
+        raise NotImplementedError
+
+
+class Audio(File):
+    """
+    """
+
+    pass
+
+
+class Video(File):
+    """
+    """
+
+    pass
 
 
 class MediaDir(object):

@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
-from shiva.models import *
+# from shiva.models import *
 from shiva import settings
 
 from flask import url_for
-from sqlalchemy.sql.expression import ClauseElement, alias
-from sqlalchemy import distinct
+from sqlalchemy import distinct, create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.expression import ClauseElement
+
+def get_db_engine():
+    return create_engine(settings.SQLALCHEMY_DATABASE_URI, echo=True)
+
+def get_db_session():
+    Session = sessionmaker(bind=get_db_engine())
+    return Session()
+
+def init_db(Base):
+    Base.metadata.create_all(bind=get_db_engine())
+
+
+# Rethink
 
 def get_or_create(session, model, defaults={}, **kwargs):
     """Django's get_or_create implementation for SQLAlchemy.
@@ -26,7 +40,7 @@ def get_artists():
     """Shortcut to get the list of artists in the DB.
     """
 
-    session = get_session()
+    session = get_db_session()
     tags = session.query(ID3Tag).join(TagGroup).\
                    filter(TagGroup.name=='performer')
     return session.query(distinct(TagContent.string_data), TagContent.pk).\
@@ -37,7 +51,7 @@ def get_songs_for_artist(artist):
     TagContent object that contains an artist name.
     """
 
-    session = get_session()
+    session = get_db_session()
     if type(artist) == int:
         artist = session.query(TagContent).filter_by(pk=artist).one()
     return session.query(Song).join(SongTag).join(TagContent).\
@@ -47,7 +61,7 @@ def get_song(pk):
     """
     """
 
-    session = get_session()
+    session = get_db_session()
     song = session.query(Song).filter_by(pk=pk).one()
     tags = session.query(TagContent).join(SongTag).\
                       filter(SongTag.song==song)

@@ -12,6 +12,13 @@ import os
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URI, echo=True)
 Session = sessionmaker(bind=engine)
 
+# ATTENTION: Next line is the worst hack to bypass this exception:
+# AttributeError: 'Sequence' object has no attribute 'arg'
+# It's thrown in flask_admin/datastore/sqlalchemy.py:250 when exclude_pks is
+# set to False on flask.ext.admin.datastore.sqlalchemy.SQLAlchemyDatastore.
+Sequence.arg = None  # HACK ALERT
+# Sorry you had to see that. Let's try to get over it and move on.
+
 def get_session():
     return Session()
 
@@ -132,4 +139,4 @@ class SongTag(Base):
     def get_contents(self):
         return self.content.get_contents()
 
-# Base.metadata.create_all(engine)
+Base.metadata.create_all(engine)

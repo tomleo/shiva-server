@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from shiva.media import MediaDir
 
-SECRET_KEY = ''  # Set this to something secret.
+SECRET_KEY = ''  # Set this to something secret. Like the ouput of:
+                 # >>> from uuid import uuid4
+                 # >>> str(uuid4())
 MEDIA_DIRS = (
     # Examples.
     # MediaDir(root='/srv/http', dirs=('/music',), url='http://127.0.0.1/'),

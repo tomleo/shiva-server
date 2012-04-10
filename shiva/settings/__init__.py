@@ -7,14 +7,14 @@ There are 3 types of settings.
 """
 import logging
 
-from shiva.settings.project import *
+from .project import *
 try:
     # Rename the file local.py.example to local.py and edit it.
-    from shiva.settings.local import *
+    from .local import *
 except ImportError:
     logging.warning("Couldn't find local settings.")
 if DEBUG:
     try:
-        from shiva.settings.debug import *
+        from .debug import *
     except ImportError:
         pass
