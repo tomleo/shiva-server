@@ -3,9 +3,9 @@
 cat /dev/brain
 ==============
 
-Just a series of thoughts about how the Flask-Restless' API could be like. None
-of this has been through any serious thought about fesibility, this are just
-random ideas.
+Just a series of thoughts about how the Flask-Restless' API could be modified
+to allow for the creation of non db-backed resources. None of this has been
+through any serious thought about fesibility, this are just random ideas.
 """
 from flask.ext.restless import APIManager, Resource
 from flapi.models import session, Audio
@@ -64,6 +64,7 @@ class SongResource(Resource):
 
     # A more SQLAlchemy-ish approach.
     __basemodel__ = Audio
+    __resource__ = '/songs/'
 
     # This method decorator should be defined once and only once per Verb. It
     # would tell the Resource how to read/write. Me gusta.
@@ -94,6 +95,10 @@ app.add_url_rule('/songs/<int:song_id>', 'song', SongResource)
 
 # Possible solution, delegate to the Resource?
 SongResource.create_rules(app)
+
+# Or do it in batch.
+api = APIManager(app, session=session)
+api.resources([SongResource, ArtistResouce, SomeOtherResource])
 
 
 # --
