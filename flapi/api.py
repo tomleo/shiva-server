@@ -5,10 +5,13 @@ cat /dev/brain
 
 Just a series of thoughts about how the Flask-Restless' API could be modified
 to allow for the creation of non db-backed resources. None of this has been
-through any serious thought about fesibility, this are just random ideas.
+through any serious thought about fesibility, they are just random ideas.
 """
+from flask import Flask
 from flask.ext.restless import APIManager, Resource
 from flapi.models import session, Audio
+
+app = Flask(__name__)
 
 
 class SongResource(Resource):
@@ -121,6 +124,55 @@ def save_song(data):
 # using this approach. Doesn't look very straightforward at first.
 # Maybe...
 api.resource(Audio, methods=['GET', 'POST', 'DELETE'])
+
+
+# --
+
+
+# Traversal
+# =========
+
+# As seen on:
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/traversal.html
+# and
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
+
+
+class RootResource(object):
+    """
+    """
+
+    __name__ = ''
+    __parent__ = None
+
+
+class SongResource(object):
+    """
+    """
+
+    def __resource_url__(self):
+        from flask import request
+
+        return request.base_url
+
+from flask.ext.restless import inside, lineage, find_root
+
+
+class Thing(object):
+    pass
+
+a = Thing()
+b = Thing()
+b.__parent__ = a
+
+inside(b, a)  # >>> True
+inside(a, b)  # >>> False
+
+list(lineage(b))
+# >>> [ <Thing object at b>, <Thing object at a>]
+
+find_root(b)
+# >>> a
 
 
 # --
