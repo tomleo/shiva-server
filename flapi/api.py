@@ -25,7 +25,13 @@ class SongResource(Resource):
     def create(self):
         pass
 
-    def read(self, id=None):
+    def read(self, id=None, ids_only=False, nesting_levels=1):
+        """
+        The ids_only parameter would force the method to return only the IDs of
+        the matching element. Useful for nesting.
+
+        Not sure about the nesting_levels.
+        """
         pass
 
     def update(self, *args, **kwargs):
@@ -56,6 +62,12 @@ class SongResource(Resource):
         """
         pass
 
+    def authorize(self):
+        pass
+
+    def get_format(self):
+        pass
+
 
 # --
 
@@ -77,6 +89,12 @@ class SongResource(Resource):
 
     @method(['POST', 'PUT', 'PATCH'])
     def write(self, data):
+        pass
+
+    def authorize(self):
+        pass
+
+    def get_format(self):
         pass
 
 
@@ -118,6 +136,10 @@ def songs(song_id=None):
 # Note that the decorator now is the previous function.
 @songs.method('PUT')
 def save_song(data):
+    pass
+
+@songs.authorize
+def check_permissions():
     pass
 
 # The problem I see with this is how to build a resource from existing models
