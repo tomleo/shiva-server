@@ -32,6 +32,7 @@ class SongResource(Resource):
 
         Not sure about the nesting_levels.
         """
+
         pass
 
     def update(self, *args, **kwargs):
@@ -60,13 +61,20 @@ class SongResource(Resource):
         Validates the data sent by the client. Run always before every method.
         Maybe could be turn into a decorator (like before_request)
         """
+
         pass
 
     def authorize(self):
         pass
 
     def get_format(self):
-        pass
+        """
+        /api/songs.json
+        /api/songs?format=json
+        Accept: application/json
+        """
+
+        raise NotImplementedError
 
 
 # --
@@ -120,6 +128,7 @@ SongResource.create_rules(app)
 # Or do it in batch.
 api = APIManager(app, session=session)
 api.resources([SongResource, ArtistResouce, SomeOtherResource])
+api.create_rules(app)  # Explicit is better than implicit
 
 
 # --
@@ -141,6 +150,13 @@ def save_song(data):
 @songs.authorize
 def check_permissions():
     pass
+
+# This method should rarely be ovewritten.
+@songs.get_format
+def get_format():
+    pass
+
+# (...)
 
 # The problem I see with this is how to build a resource from existing models
 # using this approach. Doesn't look very straightforward at first.
@@ -218,11 +234,13 @@ Unsolved issues
 * Permissions for nested resources.
 * Depth of nested resources.
 * Definition of formats to retrieve.
+* Multiple API versions.
 
 Ideas:
 * https://github.com/tryolabs/django-tastypie-extendedmodelresource#readme
 * http://django-rest-framework.org/tutorial/1-serialization.html
 * http://django-rest-framework.org/api-guide/serializers.html
+* https://github.com/ametaireau/flask-rest/
 
 """
 
