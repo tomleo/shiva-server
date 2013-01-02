@@ -15,6 +15,9 @@ db.init_app(app)
 def before_request():
     g.db = db
 
+def init_db():
+    db.create_all()
+
 api = Api(app)
 
 app.add_url_rule('/track/<int:track_id>/download.<ext>', 'download',
